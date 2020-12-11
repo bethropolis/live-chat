@@ -21,7 +21,7 @@
 
   <div class="right nav-icons"> 
     <ul>   
-     <i class="fa fa-github white-text fa-3x"></i> 
+	    <a href="https://github.com/bethropolis/live-chat"><i class="fa fa-github white-text fa-3x"></i></a>
      <i class="fa fa-ellipsis-v  white-text fa-2x" @click="toggleMenu"></i>  
     </ul> 
   </div> 
@@ -37,13 +37,13 @@
  <transition name="slide-fade">
 <div class="sidebar-menu grey darken-4" v-show="menu == true">  
   <ul>
-    <a href=""><li class="list grey white-text" >fork <i class="fa fa-github"></i></li></a>  
+    <a href="https://github.com/bethropolis/live-chat"><li class="list grey white-text" >fork <i class="fa fa-github"></i></li></a>  
     <li class="list grey white-text pointer" @click="logout" >logout acc <i class="fa fa-sign-out"></i></li> 
     <li class="list red white-text pointer" @click="deleteAcc">delete acc <i class="fa fa-logout"></i></li>    
   </ul>
   <ul class="center inline">
     <a href="https://twitter.com/bethropolis"><i class="fa fa-twitter fa-2x"></i></a>     
-    <a href="https://www.bethropolis.ga"><i class="fa fa-website white-text fa-2x"></i>website</a></ul>     
+    <a href="https://www.bethropolis.ga/live-chat"><i class="fa fa-website white-text fa-2x"></i>website</a></ul>     
 </div> 
 </transition>
 <!--  sign up form -->
