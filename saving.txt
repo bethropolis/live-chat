@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>chat app</title>   
+  <link rel="stylesheet" href="http://localhost/files/url%20shortner/lib/materialize/css/materialize.min.css">
+  <link rel="stylesheet" href="./css/style.css?e">     
+  <link rel="stylesheet" href="./lib/font-awesome/font-awesome.min.css">
+    <script src="./lib/jquery/jquery.js"></script>
+    <script src="./js/cookie.js"></script>  
+    <script src="./js/online.js"></script>    
+    <script src="./lib/vue/vue.js"></script>    
+</head>
+<body onload="app.WhoIsOnline();app.checkrequest();">  
+ <!----- the header   -------> 
+ <nav class="black" id="nav">   
+  <form @submit.prevent="handlelogin" v-show="user == null" class="inline right" method="POST">    
+  <input type="text" class="white-text" id="user-login" placeholder="enter username..." autocomplete="false">
+  <input type="password" class="white-text" id="pwd-login" placeholder="enter password..." autocomplete="false">
+  <input type="submit" class="btn" value="login">  
+  </form> 
+  <div :class="user == null ?'hide':''" class="right nav-icons"> 
+    <ul>   
+     <i class="fa fa-github white-text fa-3x"></i>   
+    </ul> 
+  </div> 
+   
+ </nav> 
+<!--    the notification    -->
+     <div id="notify" class="notify" :class="[error == true ? 'red':error == false ? 'green':'yellow']" v-show="isNotification == true"><div class="inner-msg right">{{ message }}</div><button class="btn btn-flat" :class="showbtn == false ? 'hide':''" @click="accepted">accept</button><i class="fa fa-remove right" @click="toggleNotification"></i></div> 
+
+
+<!--  the main content      -->
+<div id="root">       
+<!--  sign up form -->
+  <div class="tabs center">  
+    <span class="tab" ><a href="" @click.prevent="">sign up</a></span>
+    <span class="tab"><a href="" @click.prevent="">login </a></span> 
+  </div>
+ <form @submit.prevent="handlesubmit"  class="input-field input-form" v-show="user == null" method="POST"> 
+  <h1>sign up</h1> 
+   <p class="">{{message}}</p>     
+  <input type="text" placeholder="enter username..." id="user">
+  <input type="password" placeholder="enter password..."  id="pwd">
+  <input type="submit" class="btn purple"  id="btn"> 
+  </form>  
+   
+<!--    list of people online -->
+  <div :class="user == null ? 'hide':''" id="wrap" v-show="chatwith == null" class="collection center">
+    <h4>the following are online</h4>            
+    <button class="btn" @click="WhoIsOnline"><i class="fa fa-refresh"></i></button> 
+     <div v-for="(person, index) in online" class="list" :key="index">  
+      <ul>  
+      <li class="left">{{person.name}}</li>  
+       </ul>     
+      <button class="btn blue right" :disabled="user == person.name" @click="startChat(index)">chat</button> 
+    </div>
+  </div>
+
+<!--  messaging box -->
+  <div class="message-box box row" v-show="chatwith != null" >
+
+    <div class="col s1 yellow lighten-1 sideBar">
+      <ul class="center"> 
+        <i @click="goBack" class="fa fa-arrow-left pink-text lighten-1 fa-2x"></i> 
+      </ul>
+       <ul class="center">  
+        <i class="fa fa-cog fa-2x"></i> 
+      </ul>       
+      <ul class="center"> 
+        <i class="fa fa-heart fa-2x"></i> 
+      </ul>
+    </div> 
+    <div class="col s11 direct-message">
+    <div class="messages purple lighten-4"> 
+      <li class="msg" v-for="(msg, index) in messages" :class="msg.to? 'red-text':''" >{{msg.message}}</li> 
+    </div> 
+    <form @submit.prevent="sendMessage" class="input-field message-form" method="post">
+      <input type="text" id="msg-form">  
+      <button class="btn btn-inline"><i class="fa fa-send"></i></button>   
+    </form> 
+  </div> 
+  </div> 
+<!--    just showing some love -->
+  <h5 v-show="user == null" class="by">by 💜 bethropolis</h5>
+ </div> 
+</body>  
+
+<script type="text/javascript">
+const app = new Vue({
+     el: '#root',
+      data: {   
+         message: "you have to sign up to use the chat", 
+         user: getCookie('username'), 
+         online:[],
+         chatwith: null,
+         messages: []
+    },
+    methods: { 
+      handlesubmit: function(){
+        let msg;
+        $.post('./inc/signup.inc.php',
+        {
+               user: $('#user').val(),
+               pwd:  $('#pwd').val()
+        }, function(data){     
+                app.message = data.msg;    
+        })                     
+      },
+      getMessage: function () {
+         const vm = this;
+         vm.messages.push({message: 'happy day'});
+         let start = 0; 
+         function sendRequest () { 
+          console.log('data sent') 
+          $.get('./inc/addMessage.inc.php?start='+start+"&from="+vm.user+"&to="+vm.chatwith, function(data) {
+            if (data.items) {
+               data.items.forEach(item=>{
+               start = item.id;
+               vm.messages.push({message: item.message, id:item.who_to, to: false})                  
+             }) 
+           }
+          });
+           if (vm.chatwith != null){setTimeout(function(){sendRequest()},5000)};  
+         }   
+        sendRequest() ;
+      },
+      WhoIsOnline:function () {    
+       $.get('./inc/data.inc.php', function(areOnline) {
+             app.online = [];          
+             areOnline.forEach(function (isOnline) {
+             app.online.push({name: isOnline.name, id:isOnline.id }) 
+          }) 
+       }); 
+       let start = 0; 
+      $.get("./inc/addMessage.inc.php?start="+start+"&from="+this.user+"&to"+app.chatwith ,function(data ,item) { 
+       console.log(data)  
+      });  
+      },
+      switchMsgdata:function () {
+          let vm = this;
+          this.messages.forEach(message =>{
+          if (vm.chatwith == message.id){
+             message.to = true  
+          }
+        })
+      },
+      startChat: function (index) {
+        this.chatwith = this.online[index].id;      
+        $.get('./inc/setrequest.inc.php?user='+this.user+"&to="+this.online[index].id, function(data) {
+            notification.setNotification(data.msg, data.type)  
+        });        
+      }, 
+      checkrequest:function () {
+         $.get('./inc/checkrequest.inc.php?user='+this.user, function(data) {
+            notification.setNotification(data.msg, data.type,data.id);    
+         });
+      },
+      sendMessage: function(){
+        $.post('./inc/addMessage.inc.php', {
+          message: $('#msg-form').val(),
+          from: this.user,
+          to: this.chatwith
+        }, function(data) {
+            if (data.type == 'error'){notification.setNotification(data.msg, data.type)};
+        }); 
+        $('#msg-form').val(' '); 
+      },
+      goBack: function () {
+        this.chatwith = null
+      }   
+    },
+    watch:{
+      chatwith: function () {
+        this.getMessage()
+      },
+      messages: function () {
+        this.switchMsgdata();
+      }
+    }
+
+});
+
+// new vue instance
+const nav = new Vue({ 
+  el: '#nav',
+      data: {   
+         message: "",  
+         user: getCookie('username')  
+    },
+methods:{ 
+    handlelogin: function () {
+       $.post('./inc/login.inc.php', 
+        {
+               user: $('#user-login').val(),
+               pwd:  $('#pwd-login').val() 
+        }, function(data){     
+             if (data.type == 'success'){
+          setCookie("username", data.user , 365);
+                cookie = getCookie('username') ;
+                  app.user = cookie; 
+                  nav.user = cookie; 
+             }   
+        })
+        $('#user-login').val('')
+         $('#pwd-login').val('')            
+      }
+    } 
+})
+
+// new vue instance
+const notification = new Vue({
+  el: '#notify',
+      data: {   
+         message: "",    
+         user: getCookie('username'),  
+         isNotification: null, 
+         error: false,  
+         showbtn: false,
+         btnId : ''
+    },    
+methods:{ 
+     toggleNotification: function(){ 
+        this.isNotification == true ? this.isNotification=null:this.isNotification=true;
+       
+     }, 
+     setNotification: function(msg,type,id){
+      this.toggleNotification();
+       this.message = msg;
+       switch (type){
+        case 'error':
+         this.error = true        
+        break;
+        case 'accept':
+          this.showbtn = true;
+          this.btnId = id;
+        break;
+          case 'info':
+          this.error = null
+        break;        
+        default:
+         this.error = false
+        break;
+       }
+     },
+     accepted: function(){
+       console.log(this.btnId)
+       this.toggleNotification();
+       app.chatwith = this.btnId; 
+     }
+   }
+}) ;  
+$('.messages').animate({scrollTop: $('.messages')[0].scrollHeight}) 
+</script>
+</html> 

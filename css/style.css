@@ -1,0 +1,159 @@
+body{
+	overflow: hidden;
+}
+nav{
+	position: sticky;
+	top: 0;
+	z-index: 12;
+}
+
+*::-webkit-scrollbar{
+    width: 5px;
+}
+
+*::-webkit-scrollbar-track{
+    background-color: grey;
+}
+
+*::-webkit-scrollbar-thumb{
+	width: 5px;
+    height: 20px;  
+    border-radius: 4px;
+    background: #d500f9; 
+}
+
+*::-webkit-scrollbar-thumb:hover{
+    background: #d500f9;
+    opacity: .7;
+}
+
+.nav-icons >ul > i{ 
+	margin: 4px 17px 0 0;  
+}
+
+.sidebar-menu{
+	width: 50%;
+	position: absolute;
+	height: 100vh;
+	z-index: 8;
+	right: 0;
+	top: 64px;    
+
+}
+.input-form{
+	max-width: 300px;
+	margin-left: auto;
+	margin-right: auto; 
+}
+ 
+.inline{
+	padding: 0;
+	margin: 0 12px; 
+	display: inline-flex;
+	align-items: center;
+	justify-content: space-around; 
+	width: 50%; 
+}
+.inline > input[type=text],
+.inline > input[type=password]
+{ 
+	flex: 4; 
+}
+.pointer{
+	cursor: pointer; 
+}
+.notify{
+	width: fit-content; 
+	height: 46px; 
+	padding: 10px;  
+	font-size: 18px;
+	position: fixed; 
+	display: flex;
+	align-items: center;
+	justify-content: space-around;   
+	right: 0;  
+	border-radius: 1px; 
+	z-index: 12;  
+	transition: all .6s ease-out; 
+}
+.notify .inner-msg{
+	margin-right: 21px;    
+}
+.notify .fa-remove{
+	position: absolute;
+	right: 0; 
+}
+.hide{
+	display: none; 
+}
+.nav-icons{
+	width: fit-content;
+	height: 100%; 
+	display: flex; 
+	align-items: center;
+	justify-content: space-between; 
+	margin: 0 18px;    
+}
+.collection{
+	height: auto;
+	padding: 4px;
+
+}
+
+.list{
+	display: flex;
+	align-items: center;
+	 justify-content: space-between; 
+	padding: 9px;
+	margin: 12px auto;  
+	width: 80%; 
+	height: 60px; 
+	background: #eee; 
+}
+.row{
+	padding: 0;
+}
+.sideBar{
+	height: 100vh; 
+}
+.direct-message{
+	position: relative;
+	width: 100%;
+}
+.messages{
+	width: 100%;
+	height: 81vh;    
+    overflow-y: scroll; 
+    padding: 8px;  
+}
+.message-form{
+	width: 100%;
+	height: auto;
+	display: inline-flex;
+     bottom: 0; 
+}
+.by{
+	position: absolute;
+	bottom: 2px;
+	right: 2px; 
+}
+
+.fr:hover{  
+	color: #e51c23;  
+} 
+
+.fs:hover{ 
+	color: white; 
+}
+
+.slide-fade-enter-active {
+  transition: all .3s ease;
+}
+.slide-fade-leave-active {
+  transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+}
+.slide-fade-enter, .slide-fade-leave-to
+ {
+  transform: translateX(10px);
+  opacity: 0;
+}

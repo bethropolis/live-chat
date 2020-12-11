@@ -1,0 +1,21 @@
+{
+    "workbench.colorTheme": "Material Theme Darker",
+    "workbench.tree.indent": 16,
+    "editor.fontSize": 32,
+    "editor.formatOnPaste": true,
+    "editor.formatOnSave": true,
+    "diffEditor.codeLens": true,
+    "editor.formatOnType": true,
+    "emmet.showSuggestionsAsSnippets": true,
+    "emmet.triggerExpansionOnTab": true,
+    "jshint.lintHTML": true,
+    "php-cs-fixer.allowRisky": true,
+    "php-cs-fixer.autoFixBySemicolon": true,
+    "php-cs-fixer.formatHtml": true,
+    "php-cs-fixer.onsave": true,
+    "prettier.insertPragma": true,
+    "prettier.jsxSingleQuote": true,
+    "prettier.jsxBracketSameLine": true,
+    "editor.fontWeight": null,
+    "window.zoomLevel": -1
+}

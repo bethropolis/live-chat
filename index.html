@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head> 
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>chat app</title>   
+	<link rel="stylesheet" href="http://localhost/files/url%20shortner/lib/materialize/css/materialize.min.css">
+	<link rel="stylesheet" href="./css/style.css?5tt">      
+  <link rel="stylesheet" href="./lib/font-awesome/font-awesome.min.css">
+    <script src="./lib/jquery/jquery.js"></script>
+    <script src="./js/cookie.js"></script>	
+    <script src="./js/online.js"></script>    
+    <script src="./lib/vue/vue.js"></script> 
+    <script> 
+      $('.messages').animate({scrollTop: $('.messages')[0].scrollHeight})  
+    </script>   
+</head>
+<body onload="app.WhoIsOnline();app.checkrequest();">  
+ <!----- the header   -------> 
+ <nav class="black" id="nav">  
+
+  <div class="right nav-icons"> 
+    <ul>   
+     <i class="fa fa-github white-text fa-3x"></i> 
+     <i class="fa fa-ellipsis-v  white-text fa-2x" @click="toggleMenu"></i>  
+    </ul> 
+  </div> 
+   
+ </nav> 
+<!--    the notification    -->
+     <div id="notify" class="notify" :class="[error == true ? 'red':error == false ? 'green':'yellow']" v-show="isNotification == true"><div class="inner-msg right">{{ message }}</div><button class="btn btn-flat" :class="showbtn == false ? 'hide':''" @click="accepted">accept</button><i class="fa fa-remove right" @click="toggleNotification"></i></div> 
+
+
+<!--  the main content      -->
+<div id="root"> 
+
+ <transition name="slide-fade">
+<div class="sidebar-menu grey darken-4" v-show="menu == true">  
+  <ul>
+    <a href=""><li class="list grey white-text" >fork <i class="fa fa-github"></i></li></a>  
+    <li class="list grey white-text pointer" @click="logout" >logout acc <i class="fa fa-sign-out"></i></li> 
+    <li class="list red white-text pointer" @click="deleteAcc">delete acc <i class="fa fa-logout"></i></li>    
+  </ul>
+  <ul class="center inline">
+    <a href="https://twitter.com/bethropolis"><i class="fa fa-twitter fa-2x"></i></a>     
+    <a href="https://www.bethropolis.ga"><i class="fa fa-website white-text fa-2x"></i>website</a></ul>     
+</div> 
+</transition>
+<!--  sign up form -->
+  <div class="tabs center"  v-show="user == null">   
+    <span class="tab" ><a href="" @click.prevent="changeSigning(true)"  class="purple-text">sign up</a></span>
+    <span class="tab"><a href="" @click.prevent="changeSigning(false)" class="purple-text">login </a></span> 
+  </div>
+
+ <form @submit.prevent="handlesubmit"  class="input-field input-form" v-show="user == null && this.signUp == true" method="POST"> 
+ 	<h1>sign up</h1>  
+   <p class="">{{message}}</p>   	 
+ 	<input type="text" placeholder="enter username..." id="user">
+ 	<input type="password" placeholder="enter password..."  id="pwd">
+ 	<input type="submit"  value="sign up" class="btn purple"  id="btn"> 
+ 	</form> 
+
+<!--   login  -->
+   <form @submit.prevent="handlelogin"  class="input-field input-form" v-show="user == null && this.signUp == false" method="POST"> 
+  <h1>login</h1> 
+   <p class="">{{message}}</p>     
+  <input type="text" placeholder="enter username..." id="user-login"> 
+  <input type="password" placeholder="enter password..." id="pwd-login">
+  <input type="submit" value="login" class="btn green"  id="lbtn">  
+  </form>  
+
+
+<!--    list of people online -->
+  <div :class="user == null ? 'hide':''" id="wrap" v-show="chatwith == null" class="collection center">
+    <h4>the following are online</h4>            
+    <button class="btn" @click="WhoIsOnline"><i class="fa fa-refresh"></i></button> 
+     <div v-for="(person, index) in online" class="list" :key="index">  
+      <ul>  
+      <li class="left">{{person.name}}</li>  
+       </ul>     
+      <button class="btn blue right" :disabled="user == person.name" @click="startChat(index)">chat</button> 
+    </div>
+  </div>
+
+<!--  messaging box -->
+  <div class="message-box box row" v-show="chatwith != null" >
+
+    <div class="col s1 yellow lighten-1 sideBar">
+      <ul class="center"> 
+        <i @click="goBack" class="fa fa-arrow-left fs pink-text lighten-1 fa-2x"></i> 
+      </ul>
+       <ul class="center">  
+        <i class="fa fa-cog fa-2x fr" title="the settings page" @click="toCome"></i> 
+      </ul>       
+      <ul class="center"> 
+        <i class="fa fa-heart fa-2x fr" title="visit my website to find more"></i> 
+      </ul>
+    </div> 
+ 
+    <div class="col s11 direct-message">
+    <div class="messages purple lighten-4"> 
+      <ul v-for="(msg, index) in messages"  class="" >   
+      <li class="msg" :class="msg.to? 'red-text msg-right':''">{{msg.message}}</li>  
+    </ul>
+   </div>  
+    <form @submit.prevent="sendMessage" class="input-field message-form" method="post">
+      <input type="text" id="msg-form">  
+      <button class="btn btn-inline"><i class="fa fa-send"></i></button>   
+    </form> 
+  </div> 
+
+  </div> 
+<!--    just showing some love -->
+  <h5 v-show="user == null" class="by">by 💜 bethropolis</h5>
+ </div> 
+</body>  
+<script src="./js/app.js"></script>
+</html>
