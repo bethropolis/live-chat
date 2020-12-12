@@ -1,7 +1,7 @@
 const app = new Vue({
      el: '#root',
       data: {   
-         message: "you have to sign up to use the chat", 
+         message: "this is just a demo", 
          user: getCookie('username'), 
          online:[],
          chatwith: null,
