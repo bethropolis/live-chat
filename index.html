@@ -74,11 +74,11 @@
   <div :class="user == null ? 'hide':''" id="wrap" v-show="chatwith == null" class="collection center">
     <h4>the following are online</h4>            
     <button class="btn" @click="WhoIsOnline"><i class="fa fa-refresh"></i></button> 
-     <div v-for="(person, index) in online" class="list" :key="index">  
+     <div class="list" :key="index">  
       <ul>  
-      <li class="left">{{person.name}}</li>  
+      <li class="left">john</li>  
        </ul>     
-      <button class="btn blue right" :disabled="user == person.name" @click="startChat(index)">chat</button> 
+      <button class="btn blue right" :disabled="user == person.name" @click="startChat(1)">chat</button>  
     </div>
   </div>
 
