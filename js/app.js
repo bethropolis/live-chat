@@ -2,7 +2,7 @@ const app = new Vue({
      el: '#root',
       data: {   
          message: "this is just a demo", 
-         user: getCookie('username'), 
+         user: null, 
          online:[],
          chatwith: null,
          messages: [], 
@@ -11,47 +11,15 @@ const app = new Vue({
     },
     methods: { 
     	handlesubmit: function(){
-    		let msg;
-    		$.post('./inc/signup.inc.php',
-    		{
-               user: $('#user').val(),
-               pwd:  $('#pwd').val()
-    		}, function(data){		 
-                app.message = data.msg;    
-    		})   	              	 
+          this.user = $('#user').val() ; 	              	 
       },
       changeSigning: function (bol) {
         this.signUp = bol
       },
       getMessage: function () {
-         const vm = this;
-         let start = 0; 
-         function sendRequest () { 
-          console.log('data sent') 
-          $.get('./inc/addMessage.inc.php?start='+start+"&from="+vm.user+"&to="+vm.chatwith, function(data) {
-            if (data.items) {
-               data.items.forEach(item=>{
-               start = item.id;
-               vm.messages.push({message: item.message, id:item.who_to, to: false})                  
-             }) 
-           }
-          });
-           if (vm.chatwith != null){setTimeout(function(){sendRequest()},3000)};   
-         }    
-        sendRequest() ;      
+             
       },
       WhoIsOnline:function () {    
-       $.get('./inc/data.inc.php', function(areOnline) {
-             app.online = [];          
-             areOnline.forEach(function (isOnline) {
-             app.online.push({name: isOnline.name, id:isOnline.id }) 
-             this.checkrequest(); 
-          }) 
-       }); 
-       let start = 0; 
-      $.get("./inc/addMessage.inc.php?start="+start+"&from="+this.user+"&to"+app.chatwith ,function(data ,item) { 
-       console.log(data)  
-      });  
       },
       switchMsgdata:function () {
           let vm = this;
@@ -61,43 +29,15 @@ const app = new Vue({
           }
         })
       },
-      startChat: function (index) {
-        this.chatwith = this.online[index].id;      
-        $.get('./inc/setrequest.inc.php?user='+this.user+"&to="+this.online[index].id, function(data) {
-            notification.setNotification(data.msg, data.type)  
-        });         
+      startChat: function (index) {      
       }, 
       checkrequest:function () {
-         $.get('./inc/checkrequest.inc.php?user='+this.user, function(data) {
-            notification.setNotification(data.msg, data.type,data.id);    
-         });
       },
       sendMessage: function(){
-        $.post('./inc/addMessage.inc.php', {
-          message: $('#msg-form').val(),
-          from: this.user,
-          to: this.chatwith
-        }, function(data) {
-            if (data.type == 'error'){notification.setNotification(data.msg, data.type)};
+            this.messages.push({message: $('#msg-form').val(), id:12, to: false})  
         }); 
         $('#msg-form').val(' '); 
       }, 
-        handlelogin: function () {
-         $.post('./inc/login.inc.php', 
-            {
-               user: $('#user-login').val(),
-               pwd:  $('#pwd-login').val() 
-            }, function(data){     
-             if (data.type == 'success'){
-          setCookie("username", data.user , 365);
-                cookie = getCookie('username') ; 
-                  app.user = cookie; 
-                  nav.user = cookie; 
-             }   
-        })
-        $('#user-login').val('')
-         $('#pwd-login').val('')            
-      },
        goBack: function () {
         this.chatwith = null
       },
@@ -108,11 +48,9 @@ const app = new Vue({
        this.user = null 
     },
     deleteAcc: function () {
-      $.post('./inc/delete.inc.php', {user: this.user}, function(data) {
-      notification.setNotification(data.msg, data.type)     
-      });
+      alert('this is just a demo, works better with php involved')
       this.user = null; 
-     } 
+     }  
     }, 
     watch:{
       chatwith: function () {
